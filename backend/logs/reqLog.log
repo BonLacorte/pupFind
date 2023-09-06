@@ -6,3 +6,7 @@
 20230713	17:38:08	b6131629-c0b0-4b59-9b0f-d9b610b81c85	OPTIONS	/login	http://localhost:3000
 20230713	17:38:08	0aa78168-ebbd-4e87-b773-0354bd84098b	POST	/login	http://localhost:3000
 20230713	17:40:01	d42ea221-8ad7-42eb-8d1f-b60149f0f14c	GET	/refresh	http://localhost:3000
+20230823	22:38:20	33da5db9-3b83-4d90-a35e-1b2987fc9c52	GET	/socket.io/?EIO=4&transport=polling&t=OeYrFmt	http://localhost:3501
+20230823	22:38:26	3872af47-28d7-4ea7-a77b-12f77fb99666	GET	/socket.io/?EIO=4&transport=polling&t=OeYrHjU	http://localhost:3501
+20230823	22:38:32	aeb4059f-2932-4d33-9a19-3fcd02e84810	GET	/socket.io/?EIO=4&transport=polling&t=OeYrJBH	http://localhost:3501
+20230823	22:38:38	b9916415-f9d8-498f-851b-02a603d25b38	GET	/socket.io/?EIO=4&transport=polling&t=OeYrKf3	http://localhost:3501

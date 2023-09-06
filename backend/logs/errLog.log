@@ -1,0 +1,4 @@
+20230823	22:38:20	29fa06b1-da9b-4644-b72a-a011e02e94f7	Error: Not allowed by CORS	GET	/socket.io/?EIO=4&transport=polling&t=OeYrFmt	http://localhost:3501
+20230823	22:38:26	32a15626-c264-4fb9-9c8d-eda129c4143b	Error: Not allowed by CORS	GET	/socket.io/?EIO=4&transport=polling&t=OeYrHjU	http://localhost:3501
+20230823	22:38:32	93e0b367-b3c7-4d4a-9dc8-e317a269ac96	Error: Not allowed by CORS	GET	/socket.io/?EIO=4&transport=polling&t=OeYrJBH	http://localhost:3501
+20230823	22:38:38	4ccf8e93-96bf-420e-890d-bd0d60f80727	Error: Not allowed by CORS	GET	/socket.io/?EIO=4&transport=polling&t=OeYrKf3	http://localhost:3501

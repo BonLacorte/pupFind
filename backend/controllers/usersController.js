@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const Order = require('../models/Order')
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 const cloudinary = require("../utils/cloudinary");
