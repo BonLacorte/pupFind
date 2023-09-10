@@ -40,6 +40,8 @@ import DonePage from './features/found/DonePage';
 import MissingLocatePage from './features/missing/MissingLocatePage';
 import FoundLocatePage from './features/found/FoundLocatePage';
 import HomePage1 from './features/home/HomePage1';
+import AdminEditUserForm from './admin/features/users/AdminEditUserForm';
+import AdminNewUserForm from './admin/features/users/AdminNewUserForm';
 // const socket = socketIOClient('http://localhost:3500');
 
 function App() {
@@ -96,8 +98,13 @@ function App() {
                 <Route exact path="dash" element={<AdminDashLayout/>}>
                   <Route index element={<AdminDash />} />
                   <Route path="reports" element={<AdminReportPage/>} />
+                    
                   <Route path="messages" element={<AdminMessagesPage/>} />
-                  <Route path="users" element={<AdminUsersPage/>} />
+                  <Route path="users">
+                    <Route index element={<AdminUsersPage/>}/>
+                    <Route path="edit/:id" element={<AdminEditUserForm/>}/>
+                    <Route path="new" element={<AdminNewUserForm />}/>
+                  </Route>
                   <Route path="referenceNumber" element={<AdminReferenceNumberPage/>} />
                 </Route>
               </Route>

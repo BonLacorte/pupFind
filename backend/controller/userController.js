@@ -127,96 +127,192 @@ const createNewUser = asyncHandler(async (req, res, next) => {
 // @route POST /users
 // @access Private
 const createNewUserrr = asyncHandler(async (req, res, next) => {
+    // try {
+    //     const { name, email, password, pic } = req.body
+    //     console.log(req.body)
+    //     console.log('Hi',pic)
+
+    //     // Confirm data
+    //     if (!name || !password || !email) {
+    //         return res.status(400).json({ message: 'All fields are required' })
+    //     }
+
+    //     if (!pic || pic === '') {
+    //         req.body.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+    //         console.log('Hello',req.body.pic)
+    //     }
+    
+    //     // Check for duplicate email
+    //     const duplicate = await User.findOne({ email }).lean().exec()
+    
+    //     if (duplicate) {
+    //         return res.status(409).json({ message: 'Duplicate email' })
+    //     }
+
+    //     let pics
+    //     let picsLinks;
+
+    //     if (req.body.pic !== "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg") {
+    //         // for (let i = 0; i < pic.length; i++) {
+
+    //         if (typeof req.body.pic === "string") {
+    //             pics = req.body.pic
+    //         } else {
+    //             pics = req.body.pic;
+    //         }
+    //             console.log("HELLOOOOOOO")
+    //             const result = await cloudinary.uploader.upload(pics, {
+    //                 folder: "users",
+    //             });
+            
+    //             // req.body.pic = result.secure_url
+
+    //             picsLinks = {
+    //                 public_id: result.public_id,
+    //                 url: result.secure_url,
+    //             };
+                
+    //             console.log(picsLinks)
+
+    //             req.body.pic = picsLinks;
+    //         // }
+
+    //     } else {
+    //         // req.body.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+            
+    //         console.log('else', req.body.pic)
+    //         picsLinks = {
+    //             public_id: null,
+    //             url: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    //         };
+    //         console.log('picsLinks',picsLinks)
+    //         console.log('req.body.pic',req.body.pic)
+
+            
+    //     }
+
+        
+
+    //     // Hash password 
+    //     const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
+    //     req.body.password = hashedPwd;
+
+
+    //     picsLinks;
+
+    //     const newUser = {
+    //         name: req.body.name,
+    //         email: req.body.email,
+    //         password: req.body.password,
+    //         pic: picsLinks,
+    //     };
+        
+    //     console.log('newUser',newUser)
+
+    //     // // Create and store new user 
+    //     const user = await User.create(newUser)
+
+    //     res.status(201).json({ 
+    //         success: true, 
+    //         user
+    //     })
+        
+    // } catch (error) {
+    //     console.log(error);
+    //     next(error);
+    // }
+
     try {
-        const { name, email, password, pic } = req.body
         console.log(req.body)
-        console.log('Hi',pic)
+        const {
+            name,
+            email,
+            uid,
+            password,
+            pic,
+            membership,
+            phoneNumber,
+            specification,
+            twitterLink,
+            facebookLink,
+        } = req.body;
 
         // Confirm data
         if (!name || !password || !email) {
-            return res.status(400).json({ message: 'All fields are required' })
+            return res.status(400).json({ message: "All fields are required" });
         }
 
         if (!pic || pic === '') {
             req.body.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
             console.log('Hello',req.body.pic)
         }
-    
-        // Check for duplicate email
-        const duplicate = await User.findOne({ email }).lean().exec()
-    
-        if (duplicate) {
-            return res.status(409).json({ message: 'Duplicate email' })
-        }
 
-        let pics
+        // Check for duplicate email
+        const duplicateEmail = await User.findOne({ email }).lean().exec();
+
+        if (duplicateEmail) {
+            return res.status(409).json({ message: "Duplicate email" });
+        }
+        console.log("duplicateEmail - passed")
+
+        // Check for duplicate email
+        const duplicateUid = await User.findOne({ uid }).lean().exec();
+
+        if (duplicateUid) {
+            return res.status(409).json({ message: "Duplicate uid" });
+        }
+        console.log("duplicateUid - passed")
+
+        // Handle image upload if a new image is provided
         let picsLinks;
 
-        if (req.body.pic !== "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg") {
-            // for (let i = 0; i < pic.length; i++) {
+        if (pic !== "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg") {
+            // Upload the image and get the secure URL
+            console.log("hello1")
+            const result = await cloudinary.uploader.upload(pic, {
+                folder: "Users",
+            });
+            console.log("hello2")
 
-            if (typeof req.body.pic === "string") {
-                pics = req.body.pic
-            } else {
-                pics = req.body.pic;
-            }
-                console.log("HELLOOOOOOO")
-                const result = await cloudinary.uploader.upload(pics, {
-                    folder: "users",
-                });
-            
-                // req.body.pic = result.secure_url
-
-                picsLinks = {
-                    public_id: result.public_id,
-                    url: result.secure_url,
-                };
-                
-                console.log(picsLinks)
-
-                req.body.pic = picsLinks;
-            // }
-
+            picsLinks = {
+                public_id: result.public_id,
+                url: result.secure_url,
+            };
         } else {
-            // req.body.pic = "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
-            
-            console.log('else', req.body.pic)
+            // Use the default image URL
             picsLinks = {
                 public_id: null,
-                url: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+                url:
+                    "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
             };
-            console.log('picsLinks',picsLinks)
-            console.log('req.body.pic',req.body.pic)
-
-            
         }
 
-        
+        // Hash password
+        const hashedPwd = await bcrypt.hash(password, 10); // salt rounds
 
-        // Hash password 
-        const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
-        req.body.password = hashedPwd;
+        console.log(`hashedPwd - ${hashedPwd}`)
 
-
-        picsLinks;
-
-        const newUser = {
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
+        const newUser = new User({
+            name,
+            email,
+            uid,
+            password: hashedPwd,
             pic: picsLinks,
-        };
-        
-        console.log('newUser',newUser)
+            membership,
+            phoneNumber,
+            specification,
+            twitterLink,
+            facebookLink,
+        });
 
-        // // Create and store new user 
-        const user = await User.create(newUser)
+        console.log(`newUser - ${newUser}`)
+        // Create and store the new user
+        await newUser.save();
 
-        res.status(201).json({ 
-            success: true, 
-            user
-        })
-        
+        res.status(201).json({
+            success: true,
+            user: newUser,
+        });
     } catch (error) {
         console.log(error);
         next(error);

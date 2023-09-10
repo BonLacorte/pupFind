@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
+    uid: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     pic: {
@@ -27,7 +28,7 @@ const userSchema = mongoose.Schema(
     phoneNumber: { type: String, default: null },
     facebookLink: { type: String, default: null },
     twitterLink: { type: String, default: null },
-    membership:  { type: String, default: null },
+    membership:  { type: String, enum: ["Student", "Professor", "Staff"], default: null },
     specification: { type: String, default: null }
   },
   { timestaps: true }

@@ -968,3 +968,13 @@ Use mongoose.model(name, schema)	POST	/chat/add-lostitem-processes	http://localh
 20230823	19:46:03	a87021f3-8836-451d-abce-d8c4ac4d65e1	Error: ENOENT: no such file or directory, stat 'E:\Coding\WEB-DEV\Projects\Thesis-playground\backend\views\404.html'	PUT	/lostItems/64de17918722888b155c16cd/finishProcess	http://localhost:3501
 20230823	23:02:50	a42a6dac-d34b-4568-a302-0351695d5b4e	Error: ENOENT: no such file or directory, stat 'E:\Coding\WEB-DEV\Projects\Thesis-playground\backend\views\404.html'	GET	/favicon.ico	undefined
 20230904	23:09:35	a83905b7-d871-40f5-b89f-746f59a50c53	Error: ENOENT: no such file or directory, stat 'E:\Coding\WEB-DEV\Projects\Thesis-playground\backend\views\404.html'	POST	/login	http://localhost:3501
+20230910	20:58:22	9ec16b2a-12ce-42fc-9a6b-0174015fed9d	Error: Missing required parameter - file	POST	/user/new/new	http://localhost:3501
+20230910	21:01:15	4f49135e-a9a9-462b-8420-5d5a31fa3827	Error: Missing required parameter - file	POST	/user/new/new	http://localhost:3501
+20230910	21:01:46	3be0edef-a443-4ec8-8012-3f91c4c590f2	Error: Missing required parameter - file	POST	/user/new/new	http://localhost:3501
+20230910	21:03:54	b53db560-49ef-4044-92ff-1d34283625b5	Error: Missing required parameter - file	POST	/user/new/new	http://localhost:3501
+20230910	21:08:02	fb6b659b-c992-4182-8ed8-e0173a646714	Error: Missing required parameter - file	POST	/user/new/new	http://localhost:3501
+20230910	21:12:17	0bfcaecc-79c3-4ed4-b5d4-8238afffba60	TypeError: The "path" argument must be of type string. Received an instance of Array	POST	/user/new/new	http://localhost:3501
+20230910	21:20:33	699f2d3d-3588-4d3d-a4fa-efdb18c3faff	TypeError: The "path" argument must be of type string. Received an instance of Array	POST	/user/new/new	http://localhost:3501
+20230910	21:22:14	7b476624-aa8d-40fb-b59e-0dbbfcbefac6	TypeError: The "path" argument must be of type string. Received an instance of Array	POST	/user/new/new	http://localhost:3501
+20230910	21:24:18	9bc7cf04-4009-4dff-b800-baa86bedebcb	ValidationError: User validation failed: uid: Path `uid` is required.	POST	/user/new/new	http://localhost:3501
+20230910	21:25:30	403eff0a-cd32-4505-ba70-645d75e0e2bb	ValidationError: User validation failed: uid: Path `uid` is required.	POST	/user/new/new	http://localhost:3501

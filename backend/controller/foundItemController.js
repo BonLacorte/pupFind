@@ -26,7 +26,7 @@ const createFoundItemReport = asyncHandler(async (req, res) => {
 
     const imagesLinks = [];
 
-    if (images !== []) {
+    
         for (let i = 0; i < images.length; i++) {
             const result = await cloudinary.uploader.upload(images[i], {
                 folder: "Found Item Report",
@@ -38,12 +38,7 @@ const createFoundItemReport = asyncHandler(async (req, res) => {
             });
         }
     
-    } else {
-        imagesLinks.push({
-            public_id: '',
-            url: '',
-        });
-    }
+    
 
     req.body.image = imagesLinks;
 
