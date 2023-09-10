@@ -1,10 +1,13 @@
 const jwt = require('jsonwebtoken')
+const User = require("../models/User.js");
+const asyncHandler = require('express-async-handler');
 
-const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.token // req.headers['authorization'] || req.headers['Authorization'] || 
+const verifyJWT = asyncHandler((req, res, next) => {
+    // const authHeader = req.headers.token
+    const authHeader = req.headers.token
 
-    if (!authHeader.startsWith('Bearer ')) {         // .startsWith('Bearer ')
-        return res.status(401).json({ message: 'Unauthorized' })
+    if (!authHeader?.startsWith('Bearer ')) {         // .startsWith('Bearer ')
+        return res.status(401).json({ message: 'Unauthorized 11' })
     }
 
     const token = authHeader.split(' ')[1]
@@ -12,38 +15,20 @@ const verifyJWT = (req, res, next) => {
     jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if (err) return res.status(403).json({ message: 'Forbidden' })
+        async(err, decoded) => {
+            if (err) return res.status(403).json({ message: `Forbidden - ${err}` })
+            req.user = await User.findById(decoded.UserInfo._id).select("-password");
             req.email = decoded.UserInfo.email
-            req.roles = decoded.UserInfo.roles
-            req.id = decoded.UserInfo.id
-            req.user = decoded.UserInfo
-            req.firstname = decoded.UserInfo.firstname
-            req.lastname = decoded.UserInfo.lastname
+            req.id = decoded.UserInfo._id
+            req.userInfo = decoded.UserInfo
+            req.name = decoded.UserInfo.name
+            req.isAdmin = decoded.UserInfo.isAdmin
             
             next()
         }
     )
-}
+})
+    
+    
 
-const verifyTokenAndAuthorization = (req, res, next) => {
-    verifyJWT(req, res, () => {
-        if (req.roles.includes('admin') || req.roles.includes('Admin') || req.user.id === req.params.id) {
-            next()
-        } else {
-            res.status(403).json({ message: 'You are not allowed to do that!' })
-        }
-    })
-}
-
-const verifyTokenAndAdmin = (req, res, next) => {
-    verifyJWT(req, res, () => {
-    if (req.roles.includes('admin') || req.roles.includes('Admin')) {
-        next();
-    } else {
-        res.status(403).json("You are not alowed to do that! You are not an admin");
-    }
-    });
-};
-
-module.exports = { verifyJWT, verifyTokenAndAuthorization, verifyTokenAndAdmin } 
+module.exports = { verifyJWT } 

@@ -1,72 +1,51 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const userSchema = new mongoose.Schema({
-        firstname: {
-            type: String,
-            required: [true, "Please Enter Your Name"],
-            maxLength: [25, "Name cannot exceed 30 characters"],
-            minLength: [2, "Name should have more than 4 characters"],
-        },
-        lastname: {
-            type: String,
-            default: '',
-            maxLength: [25, "Name cannot exceed 30 characters"],
-            minLength: [2, "Name should have more than 4 characters"],
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            validate: {
-                validator: function(v) {
-                    return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v); // Email format
-                },
-                message: props => `${props.value} is not a valid email address!`
-            },
-        },
-        password: {
-            type: String,
-            required: [true, "Please Enter Your Password"],
-        },
-        roles: [{
-            type: String,
-            enum: ['Admin', 'Employee', 'Customer'],
-            default: 'Customer'
-        }],
-        // avatar: [
-        //     {
-        //         public_id: {
-        //             type: String,
-        //             required: true,
-        //         },
-        //         url: {
-        //             type: String,
-        //             required: true,
-        //         },
-        //     },
-        // ],
-        mobileNumber: {
-            type: String,
-            validate: {
-                validator: function(v) {
-                    return /^(\+?63|0)9\d{9}$/.test(v); // Philippine number format
-                },
-                message: props => `${props.value} is not a valid phone number!`
-            },
-            required: [true, 'User phone number required']
-        }
-        // Add avatar / image of the user
-    }, 
-    { 
-        timestamps: true 
-    }
+const userSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    pic: {
+      public_id: {
+        type: String,
+        default:
+          null,
+      },
+      url: {
+        type: String,
+        required: true,
+        default:
+          "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+      },
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    phoneNumber: { type: String, default: null },
+    facebookLink: { type: String, default: null },
+    twitterLink: { type: String, default: null },
+    membership:  { type: String, default: null },
+    specification: { type: String, default: null }
+  },
+  { timestaps: true }
 );
 
-    // active: {
-    //     type: Boolean,
-    //     default: true
-    // }
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password);
+// };
 
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified) {
+//     next();
+//   }
 
-module.exports = mongoose.model('User', userSchema)
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+// });
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

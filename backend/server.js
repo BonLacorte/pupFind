@@ -1,15 +1,18 @@
 require('dotenv').config()
-const express = require('express')
-const app = express()
+const express = require('express');
 const path = require('path')
-const { logger, logEvents } = require('./middleware/logger')
-const errorHandler = require('./middleware/errorHandler')
-const cookieParser = require('cookie-parser')
-const cors = require('cors')
-const corsOptions = require('./config/corsOptions')
+const http = require('http');
+const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn')
-const mongoose = require('mongoose')
+const cors = require('cors')
+const errorHandler = require('./middleware/errorHandler')
+const { logger, logEvents } = require('./middleware/logger')
+const app = express();
 const PORT = process.env.PORT || 3500
+
+const { chats } = require('./data/data');
+const corsOptions = require('./config/corsOption');
+const cookieParser = require('cookie-parser');
 
 console.log(process.env.NODE_ENV)
 
@@ -18,7 +21,6 @@ connectDB()
 app.use(logger)
 
 app.use(cors(corsOptions))
-// app.use(cors())
 
 app.use(express.json({limit: '70mb'}))
 app.use(express.urlencoded({limit: '70mb', extended: true, parameterLimit: 50000}));
@@ -27,33 +29,114 @@ app.use(cookieParser())
 
 app.use('/', express.static(path.join(__dirname, 'public')))
 
-app.use('/', require('./routes/root'))
-app.use('/', require('./routes/authRoutes'))
-app.use('/', require('./routes/userRoutes'))
-// app.use('/', require('./routes/orderRoutes'))
-// app.use('/', require('./routes/productRoutes'))
-// app.use('/', require('./routes/cartRoutes'))
-// app.use('/', require('./routes/stripeRoutes'))
+app.use('/chat', require('./routes/chatRoutes'))
+app.use('/auth', require('./routes/authRoutes'))
+app.use('/user', require('./routes/userRoutes'))
+app.use('/lostitems', require('./routes/lostItemRoutes'))
+app.use('/founditems', require('./routes/foundItemRoutes'))
+app.use('/missingitems', require('./routes/missingItemRoutes'))
+app.use('/message', require('./routes/messageRoutes'))
 
 app.all('*', (req, res) => {
-    res.status(404)
-    if (req.accepts('html')) {
-        res.sendFile(path.join(__dirname, 'views', '404.html'))
-    } else if (req.accepts('json')) {
-        res.json({ message: '404 Not Found' })
-    } else {
-        res.type('txt').send('404 Not Found')
-    }
+res.status(404)
+if (req.accepts('html')) {
+    res.sendFile(path.join(__dirname, 'views', '404.html'))
+} else if (req.accepts('json')) {
+    res.json({ message: '404 Not Found' })
+} else {
+    res.type('txt').send('404 Not Found')
+}
 })
 
 app.use(errorHandler)
 
 mongoose.set('strictQuery', false);
 
+const server = app.listen(
+    PORT,
+    console.log(`Server running on PORT ${PORT}...`)
+);
+
+const io = require("socket.io")(server, {
+    pingTimeout: 60000,
+    cors: {
+      origin: "http://localhost:3501",
+      // credentials: true,
+    },
+});
+
+
+
+// const io = socketIO(server);
+// io.origins('*:*'); // Allow all origins, you can restrict it to your specific domain in production
+const activeUsersByChat = {}; // Add this variable outside the io.on('connection', ...) block
+// Set up Socket.io connections
+io.on('connection', socket => {
+    console.log('Connected to Socket.io');
+
+    socket.on("setup", (userData) => {
+        socket.join(userData._id)
+        console.log(userData._id)
+        socket.emit("connected")
+    });
+
+    socket.on("join chat", (room) => {
+        socket.join(room);
+        console.log("User Joined Room: " + room);
+    });
+
+    socket.on("leave chat", (room) => {
+        socket.leave(room);
+        console.log("User Left Room: " + room);
+    })
+
+    // Signal from client when user opens a chat
+    socket.on("chat opened", (chatId) => {
+        activeUsersByChat[chatId] = socket.userId;
+        console.log("Chat opened", {activeUsersByChat})
+    });
+
+    // Signal from client when user closes a chat
+    socket.on("chat closed", (chatId) => {
+        if (activeUsersByChat[chatId] === socket.userId) {
+            
+            delete activeUsersByChat[chatId];
+        }
+        console.log("Chat closed", {activeUsersByChat})
+    });
+
+    socket.on("typing", (room) => socket.in(room).emit("typing"));
+    socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
+    socket.on("new message", (newMessageRecieved) => {
+        var chat = newMessageRecieved.chat;
+
+        if (!chat.users) return console.log("chat.users not defined");
+
+        chat.users.forEach((user) => {
+            if (user._id == newMessageRecieved.sender._id) return;
+
+            socket.in(user._id).emit("message recieved", newMessageRecieved);
+
+            // Add this block to update User2's last seen message
+            if (user._id == chat.users[1]._id) {
+                // Send an event to User2 to update their last seen message
+                socket.to(user._id).emit("update last seen message", newMessageRecieved);
+            }
+        });
+    });
+
+    socket.off("setup", () => {
+        console.log("USER DISCONNECTED");
+        socket.leave(userData._id);
+    });
+});
+
+// Connect to MongoDB using Mongoose
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-})
+    // app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+})    
 
 mongoose.connection.on('error', err => {
     console.log(err)

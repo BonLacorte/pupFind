@@ -4,8 +4,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#800000"
-      }
+        customBackground: "#f4f6f9",
+        primaryColor: "#800000",
+        secondaryColor: "#FFDF00"
+        // Add other custom colors here if needed
+      },
     },
   },
   plugins: [],

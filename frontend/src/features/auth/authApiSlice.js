@@ -5,14 +5,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         login: builder.mutation({
             query: credentials => ({
-                url: '/login',
+                url: '/auth/login',
                 method: 'POST',
                 body: { ...credentials }
             })
         }),
         sendLogout: builder.mutation({
             query: () => ({
-                url: '/logout',
+                url: '/auth/logout',
                 method: 'POST',
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -30,7 +30,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }),
         refresh: builder.mutation({
             query: () => ({
-                url: '/refresh',
+                url: '/auth/refresh',
                 method: 'GET',
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -40,10 +40,30 @@ export const authApiSlice = apiSlice.injectEndpoints({
                     const { accessToken } = data
                     dispatch(setCredentials({ accessToken }))
                 } catch (err) {
-                    console.log(err)
+                    console.log(`${err} - error in auth api slice`)
                 }
             }
         }),
+        register: builder.mutation({
+            query: credentials => ({
+                url: '/user/new/new',
+                method: 'POST',
+                body: { ...credentials }
+            }),
+            invalidatesTags: [
+                { type: 'User', id: "LIST" }
+            ]
+        })
+        // register: builder.mutation({
+        //     query: credentials => ({
+        //         url: '/auth/register',
+        //         method: 'POST',
+        //         body: { ...credentials }
+        //     }),
+        //     invalidatesTags: [
+        //         { type: 'User', id: "LIST" }
+        //     ]
+        // })
     })
 })
 
@@ -51,4 +71,5 @@ export const {
     useLoginMutation,
     useSendLogoutMutation,
     useRefreshMutation,
+    useRegisterMutation
 } = authApiSlice 
