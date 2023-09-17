@@ -36,6 +36,8 @@ app.use('/lostitems', require('./routes/lostItemRoutes'))
 app.use('/founditems', require('./routes/foundItemRoutes'))
 app.use('/missingitems', require('./routes/missingItemRoutes'))
 app.use('/message', require('./routes/messageRoutes'))
+app.use('/report', require('./routes/reportRoutes'))
+app.use('/claimedReport', require('./routes/claimedReportRoutes'))
 
 app.all('*', (req, res) => {
 res.status(404)

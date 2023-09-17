@@ -8,24 +8,27 @@ const cloudinary = require("../utils/cloudinary");
 //@route           GET /user?search=
 //@access          Public
 const getAllUsers = asyncHandler(async (req, res) => {
-    // console.log(req.params);
-    // console.log(req.body);  // req.body is name
-    // console.log(req.query.search);
-    // console.log(`getAllUsers ${req.user}`)
-    const keyword = req.query.search
-    ? {
-        $or: [
-            { name: { $regex: req.query.search, $options: "i" } },
-            { email: { $regex: req.query.search, $options: "i" } },
-        ],
-        }
-    : {};
+    const { search, category } = req.query;
 
-    // const users = await User.find(keyword);
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-    // const users = await User.find(keyword).find({ name: { $ne: req.body.name } });
+    const keywordFilter = search
+        ? {
+            $or: [
+                { name: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } },
+            ],
+        }
+        : {};
+
+    const categoryFilter = category ? { membership: category } : {};
+
+    const filters = { ...keywordFilter, ...categoryFilter };
+
+    const users = await User.find({ ...filters, _id: { $ne: req.user._id } });
+
     res.send(users);
 });
+
+
 
 
 // @desc Get user info in admin
@@ -325,7 +328,9 @@ const createNewUserrr = asyncHandler(async (req, res, next) => {
 // @access Private
 const updateUserProfile = asyncHandler(async (req, res, next) => {
     try {
-        const { phoneNumber, facebookLink, twitterLink, specification, membership} = req.body
+        console.log('update user profile')
+        console.log(req.body)
+        const { name, email, uid, phoneNumber, facebookLink, twitterLink, specification, membership} = req.body
         console.log(req.body)
         let user = await User.findById(req.params.userId);
         console.log(user)
@@ -347,7 +352,7 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
             if (pics.hasOwnProperty('public_id') === false) {
                 // Upload new picture to Cloudinary
                 const result = await cloudinary.uploader.upload(pics, {
-                    folder: "users",
+                    folder: "Users",
                 });
 
                 picsLinks = {
@@ -370,6 +375,9 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
         
 
         // Update user profile
+        user.name = name
+        user.email = email
+        user.uid = uid
         user.phoneNumber = phoneNumber;
         user.facebookLink = facebookLink;
         user.twitterLink = twitterLink;
@@ -387,6 +395,43 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
         next(error);
     }
 });
+
+
+// @desc Delete User
+// @route DELETE /users/:userId
+// @access Private
+const deleteUser = asyncHandler(async (req, res, next) => {
+    try {
+        // const { userId } = req.params.userId
+        console.log(req.params.userId)
+        // console.log(userId)
+
+        // Does the user exist to delete?
+        let user = await User.findById(req.params.userId)
+
+        console.log(user)
+
+        // Confirm if user exists
+        if(!user) {
+            return res.status(400).json({ message: 'User was not found' })
+        }
+
+        // Delete the avatar from cloudinary
+        if ((user.pic.public_id !== undefined || user.pic.public_id !== null) && user.pic.length > 0){
+            
+                await cloudinary.uploader.destroy(user.pic.public_id);
+        }
+
+        // Delete the user from the database
+        user = await user.deleteOne()
+
+        return res.status(200).json({ success: true });
+
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+})
 
 
 // @desc Claim LostItem
@@ -433,5 +478,6 @@ module.exports = {
     createNewUser,
     createNewUserrr,
     getUserInfo,
-    updateUserProfile
+    updateUserProfile,
+    deleteUser
 }

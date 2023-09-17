@@ -978,3 +978,44 @@ Use mongoose.model(name, schema)	POST	/chat/add-lostitem-processes	http://localh
 20230910	21:22:14	7b476624-aa8d-40fb-b59e-0dbbfcbefac6	TypeError: The "path" argument must be of type string. Received an instance of Array	POST	/user/new/new	http://localhost:3501
 20230910	21:24:18	9bc7cf04-4009-4dff-b800-baa86bedebcb	ValidationError: User validation failed: uid: Path `uid` is required.	POST	/user/new/new	http://localhost:3501
 20230910	21:25:30	403eff0a-cd32-4505-ba70-645d75e0e2bb	ValidationError: User validation failed: uid: Path `uid` is required.	POST	/user/new/new	http://localhost:3501
+20230911	22:49:27	5aa6d539-907a-4100-a5dc-9de2782dd8c2	TypeError: The "path" argument must be of type string. Received an instance of Array	POST	/user/new/new	http://localhost:3501
+20230912	00:19:04	ac16ab6d-99da-4c01-b7b7-253ddfd45896	CastError: Cast to ObjectId failed for value "${userToDelete._id}" (type string) at path "_id" for model "User"	GET	/user/$%7BuserToDelete._id%7D	undefined
+20230912	00:59:11	25f6df52-84ee-4920-a9d1-0559f7f30c59	ReferenceError: userId is not defined	DELETE	/user/64ff3be2f1c6ba7aa57eee6b	http://localhost:3501
+20230912	21:45:16	d4f63710-9748-4b18-aa02-0281cbc7c3a0	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:45:16	40b07d6f-9dea-49a8-aaf7-4b3d1ba12a4b	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:48:16	a2755b28-4403-4862-8138-26fedfcb0f00	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:48:16	6e70d84c-42ad-4a4a-8ac9-380953e7bf36	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:48:59	c302ce43-920d-4707-87a7-95d87a825f42	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:48:59	12cd0071-ba4e-4ce8-8e92-236d07b0f01c	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:49:25	4c379103-5cb2-4d50-bc4b-0d1825dead0a	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	21:49:25	cc48fd0d-2b8e-4cc1-8aa4-6c642a95e20b	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	22:33:01	8d724715-a55a-416c-98e3-18fd144eaa49	ReferenceError: selected is not defined	POST	/report/	http://localhost:3501
+20230912	22:34:24	ffb66349-2b02-4af4-887f-a079616f73be	ReferenceError: dateFound is not defined	POST	/report/	http://localhost:3501
+20230912	22:35:58	a25d6196-bd46-4bd9-8ce6-2db39353d094	ReferenceError: dateFound is not defined	POST	/report/	http://localhost:3501
+20230912	22:36:20	9039b2c8-cbc5-45a1-b3b7-2c07f6021f0a	TypeError: Cannot read properties of undefined (reading '_id')	POST	/report/	http://localhost:3501
+20230912	23:43:45	ff41e314-e3ff-4eee-8b8b-915d8139c2ea	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	23:43:46	133403c2-93b3-4a1b-aee1-4a0a852fed01	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	GET	/user/undefined	http://localhost:3501
+20230912	23:51:49	d36f8e85-d4d1-4c92-a260-0ab83edfba2d	Error: Report validation failed: creatorId: Path `creatorId` is required. I am at controller	POST	/report/	http://localhost:3501
+20230913	15:19:21	005d83ce-c35a-4a1c-bd55-87bab1452734	TypeError: Report.findById(...).lean(...).exec(...).populate is not a function	GET	/report/6500895353248218d930e220	http://localhost:3501
+20230913	15:19:21	85f8aeb7-1074-4830-9e57-81b1039ac435	TypeError: Report.findById(...).lean(...).exec(...).populate is not a function	GET	/report/6500895353248218d930e220	http://localhost:3501
+20230913	16:08:41	4c3bf62e-38d1-4fb5-9330-6ebccfc478dc	ReferenceError: lostItem is not defined	PUT	/report/6500895353248218d930e220	http://localhost:3501
+20230913	16:10:36	10b3be6a-688e-4645-8b40-6be196a1e8ef	ReferenceError: reportStatus is not defined	PUT	/report/6500895353248218d930e220	http://localhost:3501
+20230913	16:12:13	1aea3eb9-1408-491f-9e3c-175b85a056f5	ReferenceError: reportStatus is not defined	PUT	/report/6500895353248218d930e220	http://localhost:3501
+20230913	17:15:15	8288b36b-514c-4450-aab1-a2ad8101cc27	ReferenceError: reportType is not defined	GET	/report?reportType=Found	http://localhost:3501
+20230913	17:15:15	2af26d2a-3eb2-4ffe-a2d2-bb976833eda7	ReferenceError: reportType is not defined	GET	/report?reportType=Found	http://localhost:3501
+20230914	00:09:24	9d175393-1165-4405-8500-dfdcda29f2b3	TypeError: Cannot read properties of null (reading 'length')	PUT	/report/650077b4c8e57723ff3fde41	http://localhost:3501
+20230914	00:12:58	a25f830e-c680-4052-b434-a56296eebd53	TypeError: Cannot read properties of null (reading 'length')	PUT	/report/650077b4c8e57723ff3fde41	http://localhost:3501
+20230914	00:15:05	509d11cc-3236-4653-b512-6a39ec73a284	TypeError: Cannot read properties of null (reading 'length')	PUT	/report/650077b4c8e57723ff3fde41	http://localhost:3501
+20230914	00:15:46	32aefdc7-385f-4acc-8615-4a8b5c65f940	TypeError: Cannot read properties of null (reading 'length')	PUT	/report/650077b4c8e57723ff3fde41	http://localhost:3501
+20230914	00:18:26	a58107b9-b505-4339-a8b5-f6d0e99d4e16	TypeError: Cannot read properties of null (reading 'length')	PUT	/report/650077b4c8e57723ff3fde41	http://localhost:3501
+20230914	14:15:51	e995c2cb-0c10-440b-a10f-76d1502066cb	Error: Missing required parameter - public_id	DELETE	/report/6502a34fc514bc5447af0165	http://localhost:3501
+20230914	14:18:13	0eabd4c3-376f-45c6-b9c2-3f088750030e	Error: Missing required parameter - public_id	DELETE	/report/6502a34fc514bc5447af0165	http://localhost:3501
+20230914	23:29:32	198a1291-f71c-47ab-991e-135cba0045c0	CastError: Cast to ObjectId failed for value "claimed" (type string) at path "_id" for model "Report"	GET	/report/claimed	http://localhost:3501
+20230914	23:29:32	9edfb26e-b1e5-43bb-b79e-e16f95175f78	CastError: Cast to ObjectId failed for value "claimed" (type string) at path "_id" for model "Report"	GET	/report/claimed	http://localhost:3501
+20230915	16:21:32	8743122a-d69f-4851-9bf4-f232df79f29d	ReferenceError: reports is not defined	GET	/claimedReport	http://localhost:3501
+20230915	16:21:33	17564890-6cc2-41ae-a1f5-7a3738b3fbbf	ReferenceError: reports is not defined	GET	/claimedReport	http://localhost:3501
+20230915	20:42:51	3620e8c4-1c9c-4fc0-bba5-4c54b5ce34bc	ReferenceError: report is not defined	DELETE	/claimedReport/6503c908e7acbcb6edfee0a9	http://localhost:3501
+20230915	21:33:51	c2204a15-2b9b-4c91-a56d-74578b697a79	Error: Report validation failed: itemImage.0.public_id: Path `public_id` is required., itemImage.0.url: Path `url` is required. I am at controller	POST	/report/	http://localhost:3501
+20230915	21:44:24	e30e8343-040c-4fcc-b1d7-87caa8823a9a	TypeError: Assignment to constant variable.	POST	/report/	http://localhost:3501
+20230916	19:17:43	ba8f3676-835a-465a-8dce-1a35a1986285	CastError: Cast to ObjectId failed for value "info" (type string) at path "_id" for model "Report"	GET	/report/info	http://localhost:3501
+20230916	19:17:43	51196304-00cf-49a1-95c2-2f898023df2a	CastError: Cast to ObjectId failed for value "info" (type string) at path "_id" for model "Report"	GET	/report/info	http://localhost:3501

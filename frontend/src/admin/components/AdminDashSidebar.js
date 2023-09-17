@@ -27,7 +27,7 @@ const AdminDashSidebar = () => {
     return (
         <div className="w-1/6 h-full p-4 border-r flex flex-col items-center">
             {/* <h2 className="text-xl font-bold mb-4 w-full flex flex-row">Admin Dashboard</h2> */}
-            <img src={logo} alt="" />
+            <img src={logo} alt=""/>
             <div className='flex flex-row'>
                 <Link to="/" className="flex flex-row items-center mb-4">
                     <img src={user} alt="" />

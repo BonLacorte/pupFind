@@ -42,6 +42,19 @@ import FoundLocatePage from './features/found/FoundLocatePage';
 import HomePage1 from './features/home/HomePage1';
 import AdminEditUserForm from './admin/features/users/AdminEditUserForm';
 import AdminNewUserForm from './admin/features/users/AdminNewUserForm';
+import AdminEditUserLoad from './admin/features/users/AdminEditUserLoad';
+import AdminNewFoundForm from './admin/features/report/AdminNewFoundForm';
+import AdminNewMissingForm from './admin/features/report/AdminNewMissingForm';
+import AdminNewFoundLoad from './admin/features/report/AdminNewFoundLoad';
+import AdminNewMissingLoad from './admin/features/report/AdminNewMissingLoad';
+import AdminEditFoundLoad from './admin/features/report/AdminEditFoundLoad';
+import AdminEditMissingLoad from './admin/features/report/AdminEditMissingLoad';
+import AdminItemLoad from './admin/features/report/AdminItemLoad';
+import AdminClaimedReceipt from './admin/features/report/AdminClaimedReceipt';
+import AdminClaimedReciptLoad from './admin/features/report/AdminClaimedReciptLoad';
+import AdminDownloadReceipt from './admin/features/referenceNumber/AdminDownloadReceipt';
+import AdminClaimedReportInfo from './admin/features/referenceNumber/AdminClaimedReportInfo';
+import AdminReportInfo from './admin/features/report/AdminReportInfo';
 // const socket = socketIOClient('http://localhost:3500');
 
 function App() {
@@ -97,15 +110,32 @@ function App() {
               <Route element={<AdminRequireAuth />}> 
                 <Route exact path="dash" element={<AdminDashLayout/>}>
                   <Route index element={<AdminDash />} />
-                  <Route path="reports" element={<AdminReportPage/>} />
+
+                  <Route path="reports" >
+                    <Route index element={<AdminReportPage/>} />
+                    <Route path='found/new' element={<AdminNewFoundLoad/>} />
+                    <Route path='found/:id' element={<AdminItemLoad/>} />
+                    <Route path='found/info' element={<AdminReportInfo/>} />
+                    <Route path='claimed/' element={<AdminClaimedReciptLoad/>} />
+                    <Route path='missing/new' element={<AdminNewMissingLoad/>} />
+                    <Route path='missing/info' element={<AdminReportInfo/>} />
+                    <Route path='found/edit/:id' element={<AdminEditFoundLoad/>} />
+                    <Route path='missing/edit/:id' element={<AdminEditMissingLoad/>} />
+                  </Route>
+                  
                     
                   <Route path="messages" element={<AdminMessagesPage/>} />
+
                   <Route path="users">
                     <Route index element={<AdminUsersPage/>}/>
-                    <Route path="edit/:id" element={<AdminEditUserForm/>}/>
+                    <Route path="edit/:id" element={<AdminEditUserLoad/>}/>
                     <Route path="new" element={<AdminNewUserForm />}/>
                   </Route>
-                  <Route path="referenceNumber" element={<AdminReferenceNumberPage/>} />
+                  <Route path="referenceNumber">
+                    <Route index element={<AdminReferenceNumberPage/>} />
+                    <Route path='download' element={<AdminDownloadReceipt/>} />
+                    <Route path='info' element={<AdminClaimedReportInfo/>} />
+                  </Route>
                 </Route>
               </Route>
             </Route>

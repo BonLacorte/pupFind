@@ -14,6 +14,7 @@ router.route('/new/new')
 router.route("/:userId")
     .put(userController.updateUserProfile) // check
     .get(userController.getUserInfo)
+    .delete(userController.deleteUser)
 
 router.route('/')
     .get(verifyJWT, userController.getAllUsers)

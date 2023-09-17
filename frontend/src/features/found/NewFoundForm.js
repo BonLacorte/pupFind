@@ -2,18 +2,22 @@ import React, { useState, } from 'react'
 import { Locations } from '../config/Locations';
 import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NewFoundForm = () => {
 
     const currentDate = new Date().toISOString().split('T')[0];
     const {accessToken, userId, name} = useAuth();
+    const navigate = useNavigate()
 
     const [itemName, setItemName] = useState("");
     const [dateFound, setDateFound] = useState("");
     const [selectedLocation, setSelectedLocation] = useState('Choose Location');
     const [itemDescription, setItemDescription] = useState("");
-    const [image, setImage] = useState([]);
+    const [image, setImage] = useState(null);
     const [imagesPreview, setImagesPreview] = useState([]);
+    const [reportType, setReportType] = useState("FoundReport")
+    const [newFoundReport, setNewFoundReport] = useState(null)
 
     const onItemNameChanged = (e) => setItemName(e.target.value);
     const onDateFound = (e) => setDateFound(e.target.value);
@@ -47,7 +51,7 @@ const NewFoundForm = () => {
 
             // setFileToBase(file);
             console.log(file);
-            console.log("image length:", image.length);
+            // console.log("image length:", image.length);
         });
     }
 
@@ -83,19 +87,23 @@ const NewFoundForm = () => {
                 },
             };
             
-            const { data } = await axios.post(`http://localhost:3500/founditems`,
+            const { data } = await axios.post(`http://localhost:3500/report/`,
                 {
                     itemName: itemName, 
                     itemDescription: itemDescription, 
-                    dateFound: dateFound, 
-                    locationFound: selectedLocation, 
+                    date: dateFound, 
+                    location: selectedLocation, 
                     image,
-                    founder: userId
+                    creatorId: userId,
+                    reportType
                 },
             config
             );
 
-            console.log(`New Found Item - data `,data)
+            // console.log(`New Found Item - data `,data)
+            setNewFoundReport(data)
+            console.log(`userId - `, userId)
+            navigate(`/dash/found/done/`, {state: { userId: userId}})
         } catch (error) {
             console.log(error)
             console.log('NewReportForm')
@@ -125,7 +133,7 @@ const NewFoundForm = () => {
                                     </h1>
                                 </div>
                                 {/* <form className="p-4 flex flex-col"> */}
-                                <form className="p-4 flex flex-col" onSubmit={addReport}>
+                                <div className="p-4 flex flex-col" >
                                     <div className="flex flex-row w-full">
                                         <div className="w-1/2 mr-4">
                                             <label className="block mb-2" htmlFor="name"><span className='text-red-500'>*</span>
@@ -206,13 +214,15 @@ const NewFoundForm = () => {
                                         </div>
                                     </div>
 
-                                    <button className="border-solid border-primaryColor bg-primaryColor flex flex-col justify-center h-12 shrink-0 items-center border-2 mt-4 font-sans font-medium tracking-[0.5] leading-[16px] text-white mx-6">
+                                    <button className="border-solid border-primaryColor bg-primaryColor flex flex-col justify-center w-full h-12 shrink-0 items-center border-2 mt-4 font-sans font-medium tracking-[0.5] leading-[16px] text-white" onClick={addReport}>
                                         {/* <button className=""> */}
+                                        {/* <Link to={{pathname: `/dash/found/done/`, state: { report: newFoundReport}}}> */}
                                             Submit report
+                                        {/* </Link> */}
                                         {/* </button> */}
                                     </button>
                                     
-                                </form>
+                                </div>
                                 <div className="self-stretch flex flex-col mr-2 items-end">
                                 </div>
                             </div>

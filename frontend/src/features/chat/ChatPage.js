@@ -11,11 +11,6 @@ const ChatPage = () => {
     <>
     <div className="bg-customBackground min-h-screen">
       <div className="mx-auto w-screen flex justify-center flex-col pb-10 h-1/2">
-        <div className='xs:ml-4 '>
-            <h1 className="my-4 text-2xl">
-                Chat
-            </h1>
-        </div>
         <div className='flex flex-col md:flex-row flex-grow'>
             {user && <ChatList fetchAgain={fetchAgain}/>}
             {user &&

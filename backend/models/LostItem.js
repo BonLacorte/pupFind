@@ -23,10 +23,15 @@ const lostItemSchema = mongoose.Schema(
     ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     reportStatus: {
       type: String,
-      enum: ["Claimable", "Processing", "Claimed"],
+      enum: ["Missing", "Claimable", "Processing", "Claimed"],
       default: "Processing",
       required: true,
     },
+    reportType: {
+      type: String,
+      enum: ["MissingItem", "FoundItem"],
+      required: true,
+    }
     
   },
   { timestamps: true }

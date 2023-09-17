@@ -27,7 +27,7 @@ const createLostItem = asyncHandler(async (req, res) => {
 
     const imagesLinks = [];
 
-    if (images !== []) {
+    if (images !== null) {
         for (let i = 0; i < images.length; i++) {
             const result = await cloudinary.uploader.upload(images[i], {
                 folder: "products",

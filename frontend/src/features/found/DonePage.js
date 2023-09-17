@@ -1,9 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation  } from 'react-router-dom'
 
 const DonePage = () => {
-    return (
-        <div className="bg-white flex flex-col justify-between p-20 w-full ml-80">
+    const location = useLocation();
+    const proof  = location.state // Provide a default value if location.state is null
+
+    // const content = <h1>{proof && proof.userId}</h1>
+    const content = proof && proof.userId 
+        ? 
+            <div className="bg-white flex flex-col justify-between p-20 w-full ml-80">
             <div className="flex flex-row justify-between w-3/5 items-start ">
                 <div className="flex flex-col  gap-4  shrink-0 items-start ">
                     <div className="flex flex-col gap-3 w-full items-start ">
@@ -47,7 +52,13 @@ const DonePage = () => {
                 </div>
             </div>
         </div>
-    )
+        :
+        <div>
+            <p>Data not available. Please navigate through the appropriate route.</p>
+        </div>
+
+    return content
+    
 }
 
 export default DonePage
