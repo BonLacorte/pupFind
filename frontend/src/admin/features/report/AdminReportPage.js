@@ -98,14 +98,18 @@ const AdminReportPage = () => {
       // Use useEffect to fetch all reports when the component mounts
     useEffect(() => {
         getAllReports(selectedReportType);
+
+        // Set the initial sorting column and order (createdAt in descending order)
+        setSortColumn('createdAt');
+        setSortOrder('desc');
     }, []);
 
     // Sorting function for the 'date' column
-    const sortByDate = (a, b) => {
+    const sortByCreatedAt = (a, b) => {
         if (sortOrder === 'asc') {
-            return new Date(a.date) - new Date(b.date);
+            return new Date(a.createdAt) - new Date(b.createdAt);
         } else {
-            return new Date(b.date) - new Date(a.date);
+            return new Date(b.createdAt) - new Date(a.createdAt);
         }
     };
 
@@ -136,14 +140,14 @@ const AdminReportPage = () => {
     // Use a switch statement to determine which sorting function to apply
     const sortFunction = (column) => {
         switch (column) {
-            case 'date':
-                return sortByDate;
+            case 'createdAt':
+                return sortByCreatedAt;
             case 'item':
                 return sortByName;
             case 'status':
                 return sortByStatus;
             default:
-                return sortByDate; // Default sorting
+                return sortByCreatedAt; // Default sorting
         }
     };
 
@@ -166,9 +170,9 @@ const AdminReportPage = () => {
                     </button>
                 </th>
                 <th scope="col" className="px-6 py-3 bg-customBackground text-left text-sm font-medium">
-                    <button onClick={() => handleSort('date')}>
-                        {selectedReportType === 'Found' ? 'Date Found' : 'Date Missing'} {sortColumn === 'date' && sortOrder === 'asc' && <span>▲</span>}
-                        {sortColumn === 'date' && sortOrder === 'desc' && <span>▼</span>}
+                    <button onClick={() => handleSort('createdAt')}>
+                        {selectedReportType === 'Found' ? 'Date Created' : 'Date Created'} {sortColumn === 'createdAt' && sortOrder === 'asc' && <span>▲</span>}
+                        {sortColumn === 'createdAt' && sortOrder === 'desc' && <span>▼</span>}
                     </button>
                 </th>
                 <th scope="col" className="px-6 py-3 bg-customBackground text-left text-sm font-medium">
@@ -254,7 +258,11 @@ const AdminReportPage = () => {
                     <tbody>
                         {/* Map and render filteredReports here */}
                         {sortedReports.map((report) => (
-                            <tr key={report._id}>
+                            <tr key={report._id} className={
+                                new Date(report.createdAt) > new Date() - 24 * 60 * 60 * 1000
+                                    ? 'bg-yellow-50'
+                                    : ''
+                            }>
                                 {/* Render report data here */}
                                 <td className="px-6 py-3">
                                     <div className='flex flex-row items-center '>
@@ -262,8 +270,29 @@ const AdminReportPage = () => {
                                         {report.itemName}        
                                     </div>
                                 </td>
-                                <td className="px-6 py-3">{report.reportStatus}</td>
-                                <td className="px-6 py-3">{new Date(report.date).toLocaleDateString()}</td>
+                                <td className="px-6 py-3">
+                                    {report.reportStatus === "Processing" 
+                                        ? 
+                                        <div className='w-max px-2 border-2 border-red-500 font-semibold text-red-500 rounded-2xl'>
+                                            <p>Processing</p>
+                                        </div>
+                                        : report.reportStatus === "Missing"
+                                        ? 
+                                        <div className='w-max px-2 border-2 border-red-500 font-semibold text-red-500 rounded-2xl'>
+                                            <p>Missing</p>
+                                        </div>
+                                        : report.reportStatus === "Claimable" 
+                                        ?
+                                        <div className='w-max px-2 border-2 border-blue-500 font-semibold text-blue-500 rounded-2xl'>
+                                            <p>Claimable</p>
+                                        </div>
+                                        :
+                                        <div className='w-max px-2 border-2 border-green-500 font-semibold text-green-500 rounded-2xl'>
+                                            <p>Claimed</p>
+                                        </div>
+                                    }
+                                </td>
+                                <td className="px-6 py-3">{new Date(report.createdAt).toLocaleDateString()}</td>
                                 <td className="px-6 py-3">{report._id}</td>
                                 <td className="px-6 py-3">
                                         <div className='flex flex-row items-center '>
@@ -282,15 +311,8 @@ const AdminReportPage = () => {
                                     }} className="bg-white text-blue-500 font-bold py-2 px-2 rounded mr-2">
                                         Info
                                     </button>
-                                    {/* <Link 
-                                        to={{ 
-                                            pathname: selectedReportType === 'Found' ? `/admin/dash/reports/found/info` : `/admin/dash/reports/missing/info`, 
-                                            state: { report: report},
-                                            }}
-                                    >
-                                        Info
-                                    </Link> */}
-                                    {selectedReportType === 'Found' ? 
+
+                                    {selectedReportType === 'Found' && report.reportStatus === 'Claimable' ? 
                                         <Link to={`/admin/dash/reports/found/${report._id}`} className="bg-white text-blue-500 font-bold py-2 px-2 rounded mr-2">
                                             Claim
                                         </Link> : null

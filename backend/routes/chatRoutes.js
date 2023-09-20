@@ -11,10 +11,10 @@ router.route("/")
     .post(chatController.accessChat)
 
 router.route("/add-lostitem-processes")
-    .post(chatController.addLostItemProcessesToChatData)
+    .post(verifyJWT, chatController.addLostItemProcessesToChatData)
 
 router.route("/update-last-seen-message")
-    .post(chatController.updateLastSeenMessage)
+    .post(verifyJWT, chatController.updateLastSeenMessage)
 
 // router.route("/group")
 //     .post(chatController.createGroupChat);

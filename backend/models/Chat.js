@@ -19,7 +19,6 @@ const chatSchema = mongoose.Schema(
       },
     ],
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    lostItemProcesses: [{ type: mongoose.Schema.Types.ObjectId, ref: "LostItem" },],
   },
   { timestamps: true }
 );

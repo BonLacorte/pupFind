@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Report = require("../models/Report");
 const Chat = require("../models/Chat")
 const cloudinary = require("../utils/cloudinary");
+const mongoose = require('mongoose');
 
 
 //@description     Search for LostItems with Pagination
@@ -44,6 +45,45 @@ const getAllReports = asyncHandler(async (req, res) => {
 
 })
 
+//@description     Search for LostItems with Pagination
+//@route           GET /api/report/creatorId
+//@access          Public
+const getAllReportsByUser = asyncHandler(async (req, res, next) => {
+    
+    // console.log(`getAllReportsByUser req.params.creatorId`,req.params.creatorId)
+    try {
+        const { creatorUid } = req.params; // Get the creatorId from the request body
+    
+        // Convert creatorId to ObjectId
+        // console.log(`getAllReportsByUser creatorObjectId`, creatorId)
+        // const creatorObjectId = new mongoose.Types.ObjectId(creatorId);
+        // console.log(`getAllReportsByUser creatorObjectId`, creatorObjectId)
+
+        // Find all reports where creatorId matches the provided creatorId
+        let reports = await Report.find({})
+            .populate({
+                path: 'creatorId',
+                select: 'pic name email membership specification facebookLink phoneNumber twitterLink uid',
+            });
+        console.log(`creatorUid`, req.params.uid)
+        // console.log(`before`,reports)
+
+        // Use creatorObjectId in the query
+        const filteredReports = reports.filter((report) => {
+            return (
+                report.creatorId.uid.match(req.params.uid)
+            );
+        });
+
+        // console.log(`after`,filteredReports)
+        res.json(filteredReports);
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+})
+
 
 // @desc Get user info in admin
 // @route GET /user/:id
@@ -74,7 +114,7 @@ const getReportInfo = asyncHandler(async (req, res, next) => {
 //@route           POST /api/report
 //@access          Protected
 const createReport = asyncHandler(async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     const { itemName, date, location, itemDescription } = req.body;
 
     if (!itemName  || !date || !location || !itemDescription) {
@@ -127,7 +167,7 @@ const createReport = asyncHandler(async (req, res) => {
         reportType: req.body.reportType
     };
 
-    console.log(newReport)
+    // console.log(newReport)
     // console.log(parsedDateFound)
 
     try {
@@ -300,4 +340,6 @@ const deleteReport = asyncHandler(async (req, res, next) => {
     }
 })
 
-module.exports = { createReport, getAllReports, updateReport, getReportInfo, deleteReport };
+
+
+module.exports = { createReport, getAllReports, updateReport, getReportInfo, deleteReport, getAllReportsByUser };

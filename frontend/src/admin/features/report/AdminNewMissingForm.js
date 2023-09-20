@@ -9,7 +9,7 @@ const AdminNewMissingForm = ({ users }) => {
     const {accessToken, userId, name} = useAdminAuth;
 
     const [itemName, setItemName] = useState("");
-    const [dateFound, setDateFound] = useState("");
+    const [dateMissing, setDateMissing] = useState("");
     const [selectedLocation, setSelectedLocation] = useState('Choose Location');
     const [itemDescription, setItemDescription] = useState("");
     const [image, setImage] = useState(null);
@@ -19,7 +19,7 @@ const AdminNewMissingForm = ({ users }) => {
     const [idNum, setIdNum] = useState("");
 
     const onItemNameChanged = (e) => setItemName(e.target.value);
-    const onDateFound = (e) => setDateFound(e.target.value);
+    const onDateFound = (e) => setDateMissing(e.target.value);
     const onLocationChanged = (e) => setSelectedLocation(e.target.value);
     const onDescriptionChanged = (e) => setItemDescription(e.target.value);
     const onIdNumChanged = (e) => setIdNum(e.target.value);
@@ -66,7 +66,7 @@ const AdminNewMissingForm = ({ users }) => {
         )
     })
 
-    const canSaveMissingReport = [itemName, itemDescription, dateFound, selectedLocation !== 'Choose Location', image, reportType] 
+    const canSaveMissingReport = [itemName, itemDescription, dateMissing, selectedLocation !== 'Choose Location', image, reportType] 
 
     // Function to check if idNum matches any user's UID
     const findUserIdByUid = (uid) => {
@@ -100,7 +100,7 @@ const AdminNewMissingForm = ({ users }) => {
                 {
                     itemName: itemName, 
                     itemDescription: itemDescription, 
-                    date: dateFound, 
+                    date: dateMissing, 
                     location: selectedLocation, 
                     image,
                     creatorId,
@@ -168,7 +168,7 @@ const AdminNewMissingForm = ({ users }) => {
                                 name="name"
                                 type="date"
                                 max={currentDate}
-                                value={dateFound}
+                                value={dateMissing}
                                 onChange={onDateFound}
                             />
                         </div>

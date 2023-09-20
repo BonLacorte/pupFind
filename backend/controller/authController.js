@@ -107,6 +107,7 @@ const login = asyncHandler(async (req, res, next) => {
                     "email": foundUser.email,
                     "isAdmin": foundUser.isAdmin,
                     "pic": foundUser.pic,
+                    "uid": foundUser.uid
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -139,6 +140,7 @@ const login = asyncHandler(async (req, res, next) => {
             email: foundUser.email,
             isAdmin: foundUser.isAdmin,
             pic: foundUser.pic, 
+            uid: foundUser.uid,
             accessToken})
         // console.log(process.env.REFRESH_TOKEN_SECRET)
         
@@ -179,6 +181,7 @@ const refresh = (req, res, next) => {
                             "email": foundUser.email,
                             "isAdmin": foundUser.isAdmin,
                             "pic": foundUser.pic,
+                            "uid": foundUser.uid
                         }
                     },
                     process.env.ACCESS_TOKEN_SECRET,

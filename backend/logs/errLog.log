@@ -1019,3 +1019,34 @@ Use mongoose.model(name, schema)	POST	/chat/add-lostitem-processes	http://localh
 20230915	21:44:24	e30e8343-040c-4fcc-b1d7-87caa8823a9a	TypeError: Assignment to constant variable.	POST	/report/	http://localhost:3501
 20230916	19:17:43	ba8f3676-835a-465a-8dce-1a35a1986285	CastError: Cast to ObjectId failed for value "info" (type string) at path "_id" for model "Report"	GET	/report/info	http://localhost:3501
 20230916	19:17:43	51196304-00cf-49a1-95c2-2f898023df2a	CastError: Cast to ObjectId failed for value "info" (type string) at path "_id" for model "Report"	GET	/report/info	http://localhost:3501
+20230918	18:32:52	58b6e3de-c009-40ac-8815-b92917f3153f	ReferenceError: mongoose is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:32:52	c8f1ae03-9b89-4288-8a64-3ce94f65ec0a	ReferenceError: mongoose is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:32:54	f2e9e1d1-b132-43d8-aeb1-e3813d94f08b	ReferenceError: mongoose is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:32:54	f9d00811-036d-4a2e-8229-ff6808a2e34e	ReferenceError: mongoose is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:33:46	9cae8bee-13f0-4f28-9210-3ec3a143702e	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:33:47	d0739032-6f96-43eb-90f0-9a9bc320db73	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:33:48	a1657b62-dac2-4685-9d96-515697c91dbe	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:33:48	63fee228-fa64-47b2-bc69-890efd51c641	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:39:08	28b68c07-f3bd-468e-a70d-c937c2b5608b	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:39:08	7a34fa75-b4e1-421e-8101-d004b327f3ed	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:39:09	3bc20d25-2fcd-45f7-8085-ae54238a585c	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:39:09	aca1a1c4-2d0f-48ec-958e-819ea0e0e514	TypeError: Class constructor ObjectId cannot be invoked without 'new'	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:40:51	83fb2058-9c7d-491b-b973-1e10603937a2	ReferenceError: filteredReports is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:40:51	34988073-0935-4cac-85ef-7b6e0fe69638	ReferenceError: filteredReports is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:40:51	1ffa8634-8f76-4b39-bb05-44b93bb03d6e	ReferenceError: filteredReports is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:40:52	924eed35-e7b5-4e56-b48f-e559cef2a256	ReferenceError: filteredReports is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:59:43	a173e006-a12f-4941-ac37-9ffced61a986	CastError: Cast to ObjectId failed for value "{ 'creatorId._id': new ObjectId("65082d9e406afd285d90aab9") }" (type Object) at path "_id" for model "Report"	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:59:43	b05417cf-5a24-489b-95ee-ce0a2ab03c47	CastError: Cast to ObjectId failed for value "{ 'creatorId._id': new ObjectId("65082d9f406afd285d90aae5") }" (type Object) at path "_id" for model "Report"	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:59:44	a7d703b8-9f00-453f-b1fb-f372a8b6ed25	CastError: Cast to ObjectId failed for value "{ 'creatorId._id': new ObjectId("65082da0406afd285d90ab29") }" (type Object) at path "_id" for model "Report"	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	18:59:45	7acc4fbf-36b3-4a47-adb6-24a9509ea94b	CastError: Cast to ObjectId failed for value "{ 'creatorId._id': new ObjectId("65082da1406afd285d90ab4f") }" (type Object) at path "_id" for model "Report"	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	19:23:24	34fed651-be1f-4034-8303-147f48f0aaf5	ReferenceError: concole is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	19:23:24	2a6a5a13-6b8a-41c6-9efa-69eddbea5638	ReferenceError: concole is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	19:23:25	ac802386-8665-4e5a-a5f1-9cc8b9ba8415	ReferenceError: concole is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	19:23:26	001495cc-913f-4a01-80d3-952fbf556563	ReferenceError: concole is not defined	GET	/report/creator/64dd92d71f727ca91e1aa236	http://localhost:3501
+20230918	19:54:16	866cb454-c357-4aef-a0ec-d2fae35d7017	ReferenceError: creatorObjectId is not defined	GET	/report/creator/2020-12254-KL-0	http://localhost:3501
+20230919	00:34:25	e492496c-c197-41f6-99bb-24e0ce0dbd29	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/	http://localhost:3501
+20230919	00:49:39	65443378-19d2-4604-847b-590e40adcd5d	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/	http://localhost:3501
+20230919	01:08:07	72ddc8a0-4985-427a-82a8-98c0f488b7d7	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/update-last-seen-message	http://localhost:3501
+20230919	01:08:07	27edc5c3-3039-4b8b-a9e3-f3acd28446bb	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/update-last-seen-message	http://localhost:3501
+20230919	01:08:07	cb2e543b-8c54-4592-b70f-1c3844125fb7	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/update-last-seen-message	http://localhost:3501
+20230919	01:09:14	e6b1ac50-e9f9-407c-b898-8082c6f5cbcc	TypeError: Cannot read properties of undefined (reading '_id')	POST	/chat/update-last-seen-message	http://localhost:3501

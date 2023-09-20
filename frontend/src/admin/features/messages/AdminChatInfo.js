@@ -7,6 +7,7 @@ Checkbox, // Import Checkbox component
 import axios from 'axios';
 import useAdminAuth from '../../hooks/useAdminAuth';
 import { ChatState } from '../../../context/ChatProvider';
+import ScrollableFeed from 'react-scrollable-feed';
 
 const AdminChatInfo = () => {
     const { selectedChat, user } = ChatState();
@@ -20,72 +21,104 @@ const AdminChatInfo = () => {
     };
 
     const chatMate = getChatMate();
-
-    // Add state variables for dropdown values and Meetup Accepted checkboxes
-    const [claimingMethod, setClaimingMethod] = useState(chatMate ? 'Meetup' : ''); // Default value based on your logic
-    const [meetupPlace, setMeetupPlace] = useState(chatMate ? 'Public Info Area' : ''); // Default value based on your logic
-    const [meetupTime, setMeetupTime] = useState(''); // Default empty value for meetup time input
-    const [user1Accepted, setUser1Accepted] = useState(false); // Default value based on your logic
-    const [user2Accepted, setUser2Accepted] = useState(false); // Default value based on your logic
     
-    const finishProcess = async (lostItemId) => {
+    const [reports, setReports] = useState(null)
+    const [missingReports, setMissingReports] = useState(null)
+    const [foundReports, setFoundReports] = useState(null)
+
+    // Create a function to fetch all reports of a user
+    const getAllReportsByUser = async () => {
+        console.log(`chatMate.uid `,chatMate.uid)
+        console.log(`chatMate`,chatMate)
+        let creatorId = chatMate.uid
+        
         try {
-            // Send a request to your backend to finish the process
-            
             const config = {
                 headers: {
+                    "Content-type": "application/json",
                     token: `Bearer ${accessToken}`,
                 },
             };
 
-            const { data } = await axios.put(`http://localhost:3500/lostItems/${lostItemId}/finishProcess`, 
-            {
-                chatId: selectedChat._id
-            }
-            ,config );
-
-            // Handle response or show a message to the user
-            console.log(data);
-        } catch (error) {
-            console.error('Error finishing process:', error);
-        }
-    };
-
-    const cancelProcess = async (lostItemId) => {
-        try {
-            // Send a request to your backend to cancel the process
+            let url = `http://localhost:3500/report/creator/${creatorId}`;
             
-            const config = {
-                headers: {
-                    token: `Bearer ${accessToken}`,
-                },
-            };
+            console.log(url)
+            const { data } = await axios.get(url, config); // Replace with your API endpoint
+            
+            // Filter out reports with 'Claimed' status
+            // const filteredData = data.filter((report) => report.reportStatus !== 'Claimed');
+            
+            console.log(`data`,data)
+            
+            const foundReport = data.filter((report) => report.reportType === 'FoundReport');
+            const missingReport = data.filter((report) => report.reportType === 'MissingReport');
 
-            const { data } = await axios.put(`http://localhost:3500/lostItems/${lostItemId}/cancelProcess`, 
-            {
-                chatId: selectedChat._id
-            }
-            ,config );
-
-
-            // Handle response or show a message to the user
-            console.log(data);
+            setReports(data); // Set the reports in state
+            setFoundReports(foundReport)
+            setMissingReports(missingReport)
+            console.log(`reports`,reports)
         } catch (error) {
-            console.error('Error cancelling process:', error);
+            console.error(error);
         }
     };
+
+    // const finishProcess = async (lostItemId) => {
+    //     try {
+    //         // Send a request to your backend to finish the process
+            
+    //         const config = {
+    //             headers: {
+    //                 token: `Bearer ${accessToken}`,
+    //             },
+    //         };
+
+    //         const { data } = await axios.put(`http://localhost:3500/lostItems/${lostItemId}/finishProcess`, 
+    //         {
+    //             chatId: selectedChat._id
+    //         }
+    //         ,config );
+
+    //         // Handle response or show a message to the user
+    //         console.log(data);
+    //     } catch (error) {
+    //         console.error('Error finishing process:', error);
+    //     }
+    // };
+
+    // const cancelProcess = async (lostItemId) => {
+    //     try {
+    //         // Send a request to your backend to cancel the process
+            
+    //         const config = {
+    //             headers: {
+    //                 token: `Bearer ${accessToken}`,
+    //             },
+    //         };
+
+    //         const { data } = await axios.put(`http://localhost:3500/lostItems/${lostItemId}/cancelProcess`, 
+    //         {
+    //             chatId: selectedChat._id
+    //         }
+    //         ,config );
+
+
+    //         // Handle response or show a message to the user
+    //         console.log(data);
+    //     } catch (error) {
+    //         console.error('Error cancelling process:', error);
+    //     }
+    // };
 
     useEffect(() => {
-        console.log('Chat Info', selectedChat);
+        // console.log('Chat Info', selectedChat);
+        if (selectedChat) {
+            getAllReportsByUser()
+        }
+        
+        
+
+        // eslint-disable-next-line
     }, [selectedChat]);
-
-    const processCancelled = (lostItemProcess) => {
-        return lostItemProcess.processHistory.some(history => history.chat === selectedChat._id && history.status === 'cancelled');
-    };
-
-    const processClaimed = (lostItemProcess) => {
-        return lostItemProcess.processHistory.some(history => history.chat === selectedChat._id && history.status === 'success');
-    };
 
     return (
         <div className="flex flex-col p-3 bg-white w-full md:w-1/5 rounded-lg border border-gray-300">
@@ -96,7 +129,7 @@ const AdminChatInfo = () => {
                     </div>
                     <div className="">
                         {chatMate ? (
-                            <div className="p-3 border-b border-gray-300">
+                            <div className="p-3 border-gray-300">
                                 {/* <h2 className="text-lg font-semibold">Chat Mate:</h2> */}
                                 <div className="flex flex-col items-center my-2">
                                     <Image src={chatMate.pic.url} alt={chatMate.name} boxSize="100px" rounded="full" />
@@ -109,85 +142,151 @@ const AdminChatInfo = () => {
                                         </ChatMateModal> */}
                                     </div>
                                 </div>
-                                <div>
-                                    <p className="font-semibold mb-2">Reports</p>
+                                <div className=" border-blue-500">
+                                    <p className="font-bold mb-2">Reports</p>
+                                    
+                                    <p className="font-bold mb-2">Missing Reports</p>
+                                    {missingReports ?
+                                        <div className="overflow-y-auto max-h-[300px] mb-4 border-blue-500">
+                                            
+                                            <ScrollableFeed>
+                                                <Accordion allowMultiple>
+                                                    {missingReports.map((report) => (
+                                                        <AccordionItem key={report._id}>
+                                                            <h2>
+                                                                <AccordionButton>
+                                                                    <Box flex="1" textAlign="left">
+                                                                        {report.itemName}
+                                                                    </Box>
+                                                                    <AccordionIcon />
+                                                                </AccordionButton>
+                                                            </h2>
+                                                            <AccordionPanel pb={4}>
+                                                                
+                                                                <p className="font-semibold">Date Found:</p>
+                                                                <p>{new Date(report.date).toISOString().slice(0, 10)}</p>
 
-                                    <Accordion defaultIndex={[0]} allowMultiple>
-                                    {selectedChat.lostItemProcesses.map((lostItemProcess) => (
-                                        <AccordionItem key={lostItemProcess._id}>
-                                            <h2>
-                                                <AccordionButton>
-                                                    <Box flex="1" textAlign="left">
-                                                        {lostItemProcess.itemName}
-                                                    </Box>
-                                                    <AccordionIcon />
-                                                </AccordionButton>
-                                            </h2>
-                                            <AccordionPanel pb={4}>
-                                                {/* ... (previous code) */}
-                                                
-                                                <p className="font-bold">Date Found:</p>
-                                                <p>{new Date(lostItemProcess.dateFound).toISOString().slice(0, 10)}</p>
+                                                                <p className="font-semibold">Location Found:</p>
+                                                                <p>{report.location}</p>
 
-                                                <p className="font-bold">Location Found:</p>
-                                                <p>{lostItemProcess.locationFound}</p>
+                                                                <p className="font-semibold">Item Description:</p>
+                                                                <p>{report.itemDescription}</p>
 
-                                                <p className="font-bold">Item Description:</p>
-                                                <p>{lostItemProcess.itemDescription}</p>
+                                                                <div className="grid grid-cols-2 gap-4 py-2 mb-4">
+                                                                    {report.itemImage ? report.itemImage.map((image) => (
+                                                                        <Image
+                                                                            key={image._id}
+                                                                            src={image.url}
+                                                                            alt={`Image of ${report.itemName}`}
+                                                                            boxSize="100px"
+                                                                        />
+                                                                    ))
+                                                                    :
+                                                                    null }
+                                                                </div>
 
-                                                <div className="grid grid-cols-2 gap-4 py-2">
-                                                    {lostItemProcess.itemImage.map((image) => (
-                                                        <Image
-                                                            key={image._id}
-                                                            src={image.url}
-                                                            alt={`Image of ${lostItemProcess.itemName}`}
-                                                            boxSize="100px"
-                                                        />
+                                                                <p className='w-max'>
+                                                                    {report.reportStatus === "Missing" 
+                                                                        ? 
+                                                                        <div className='px-2 border-2 border-red-500 font-semibold text-red-500 rounded-2xl'>
+                                                                            <p>Missing</p>
+                                                                        </div>
+                                                                        :
+                                                                        <div className='px-2 border-2 border-green-500 font-semibold text-green-500 rounded-2xl'>
+                                                                            <p>Claimed</p>
+                                                                        </div>
+                                                                    }
+                                                                </p>        
+
+                                                            </AccordionPanel>
+
+                                                        </AccordionItem>
                                                     ))}
-                                                </div>
+                                                </Accordion>
+                                            </ScrollableFeed>
+                                            
+                                        </div>   
+                                    : 
+                                        <div className="flex items-center justify-center h-full">
+                                            <p className="text-3xl pb-3 font-work-sans">
+                                                No Missing Reports.
+                                            </p>
+                                        </div>
+                                    } 
+                                    
+                                    <p className="font-bold mb-2">Found Reports</p>
+                                    {foundReports ? 
+                                        <div className="overflow-y-auto max-h-[300px]  border-blue-500">
+                                            
+                                            <ScrollableFeed>
+                                                <Accordion allowMultiple>
+                                                {foundReports.map((report) => (
+                                                    <AccordionItem key={report._id}>
+                                                        <h2>
+                                                            <AccordionButton>
+                                                                <Box flex="1" textAlign="left">
+                                                                    {report.itemName}
+                                                                </Box>
+                                                                <AccordionIcon />
+                                                            </AccordionButton>
+                                                        </h2>
+                                                        <AccordionPanel pb={4}>
+                                                            
+                                                            <p className="font-semibold">Date Found:</p>
+                                                            <p>{new Date(report.date).toISOString().slice(0, 10)}</p>
 
-                                                <p className="font-bold">Founder:</p>
-                                                <p>{lostItemProcess.founderId.name}</p>
+                                                            <p className="font-semibold">Location Found:</p>
+                                                            <p>{report.location}</p>
 
-                                                {/* <button
-                                                    onClick={() => cancelProcess(lostItemProcess._id)}
-                                                    className="px-4 py-2 mt-4 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-200"
-                                                >
-                                                    Cancel Process
-                                                </button>
+                                                            <p className="font-semibold">Item Description:</p>
+                                                            <p>{report.itemDescription}</p>
 
-                                                <button
-                                                    onClick={() => finishProcess(lostItemProcess._id)}
-                                                    className="px-4 py-2 mt-4 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200"
-                                                >
-                                                    Claimed
-                                                </button> */}
+                                                            <div className="grid grid-cols-2 gap-4 py-2 mb-4">
+                                                                {report.itemImage ? report.itemImage.map((image) => (
+                                                                    <Image
+                                                                        key={image._id}
+                                                                        src={image.url}
+                                                                        alt={`Image of ${report.itemName}`}
+                                                                        boxSize="100px"
+                                                                    />
+                                                                ))
+                                                                : 
+                                                                null}
+                                                            </div>
 
-                                                {processCancelled(lostItemProcess) && <p className="mt-2 text-red-600">Process Cancelled</p>}
-                                                {processClaimed(lostItemProcess) && <p className="mt-2 text-green-600">Successfully Claimed</p>}
+                                                            <p className='w-max'>
+                                                                {report.reportStatus === "Processing" 
+                                                                    ? 
+                                                                    <div className='px-2 border-2 border-red-500 font-semibold text-red-500 rounded-2xl'>
+                                                                        <p>Processing</p>
+                                                                    </div>
+                                                                    : report.reportStatus === "Claimable" 
+                                                                    ?
+                                                                    <div className='px-2 border-2 border-blue-500 font-semibold text-blue-500 rounded-2xl'>
+                                                                        <p>Claimable</p>
+                                                                    </div>
+                                                                    :
+                                                                    <div className='px-2 border-2 border-green-500 font-semibold text-green-500 rounded-2xl'>
+                                                                        <p>Claimed</p>
+                                                                    </div>
+                                                                }
+                                                            </p>              
 
-                                                {!processCancelled(lostItemProcess) && !processClaimed(lostItemProcess) && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => cancelProcess(lostItemProcess._id)}
-                                                            className="px-4 py-2 mt-4 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-200"
-                                                        >
-                                                            Cancel Process
-                                                        </button>
+                                                        </AccordionPanel>
 
-                                                        <button
-                                                            onClick={() => finishProcess(lostItemProcess._id)}
-                                                            className="px-4 py-2 mt-4 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200"
-                                                        >
-                                                            Claimed
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </AccordionPanel>
-
-                                        </AccordionItem>
-                                    ))}
-                                    </Accordion>
+                                                    </AccordionItem>
+                                                ))}
+                                                </Accordion>
+                                            </ScrollableFeed>
+                                            
+                                        </div>
+                                    :
+                                        <div className="flex items-center justify-center h-full">
+                                            <p className="text-3xl pb-3 font-work-sans">
+                                                No Found Reports.
+                                            </p>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         ) : (

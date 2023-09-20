@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ChatState } from '../context/ChatProvider'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { getSender, getSenderFull } from '../features/config/ChatLogic';
+import { getSender, getSenderAvatar, getSenderFull } from '../features/config/ChatLogic';
 import UpdateGroupChatModal from './Miscellaneous/UpdateGroupChatModal';
 import ScrollableChat from './ScrollableChat';
 import animationData from '../animations/typing.json'
@@ -40,8 +40,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
 
     const fetchMessages = async () => {
-        console.log('value of chats in SingleChat - fetchMessages',{chats})
-        console.log('value of selectedChat in SingleChat - fetchMessages',{selectedChat})
+        // console.log('value of chats in SingleChat - fetchMessages',{chats})
+        // console.log('value of selectedChat in SingleChat - fetchMessages',{selectedChat})
         if (!selectedChat) {
             return
         };
@@ -72,10 +72,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     const updateLastSeenMessage = async (message) => {
         try {
-            console.log("From ULS User 1")
-            console.log('chatId User 1', selectedChat._id)
+            // console.log("From ULS User 1")
+            // console.log('chatId User 1', selectedChat._id)
+            
             // console.log('lastMessageId User 1',messages[messages?.length - 1]?._id)
-            console.log('lastMessageId User 1', message)
+            
+            // console.log('lastMessageId User 1', message)
             const config = {
                 headers: {
                     token: `Bearer ${accessToken}`,
@@ -98,7 +100,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // Function to update User2's last seen message
     const updateUser2LastSeenMessage = async (newMessageReceived) => {
         try {
-            console.log("From ULS User 2")
+            // console.log("From ULS User 2")
             // Make an API request to update User2's last seen message
             const config = {
                 headers: {
@@ -142,6 +144,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 await updateLastSeenMessage(data)
 
                 socket.emit("new message", data);
+                // console.log("new message", data)
                 setMessages([...messages, data]);
                 console.log({messages})
                 // console.log('SingleChat sendMessage-selectedChat ',{selectedChat})
@@ -243,28 +246,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             </button>
                             {!selectedChat.isGroupChat ? (
                                 <>
-                                    {getSender(user, selectedChat.users)}
+                                    <div className='flex flex-row items-center'>
+                                        <img src={getSenderAvatar(user, selectedChat.users)} alt="" className="w-10 h-10 rounded-full mr-2"/>
+                                        <b>{getSender(user, selectedChat.users)}</b>
+                                    </div>
+                                    
                                     {/* <ProfileModal user={getSenderFull(user, selectedChat.users)} /> */}
                                 </>
                                 ) : (
                                 <>
                                     {selectedChat.chatName.toUpperCase()}
-                                    <UpdateGroupChatModal
+                                    {/* <UpdateGroupChatModal
                                     fetchMessages={fetchMessages}
                                     fetchAgain={fetchAgain}
                                     setFetchAgain={setFetchAgain}
-                                    />
+                                    /> */}
                                 </>
                                 )}
                         </div>
-                        <div className="flex flex-col justify-end p-3 bg-gray-200 w-full h-full rounded-lg overflow-hidden">
+                        <div className="flex flex-col justify-end p-3  w-full h-full rounded-lg overflow-hidden">
                             {loading ? (
                                 <div className="self-center">
                                     {/* <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-500"></div> */}
                                     <PulseLoader color={"#000"} />
                                 </div>
                             ) : (
-                                <div className="flex flex-col overflow-y-scroll scrollbar-none">
+                                <div className="flex flex-col overflow-y-auto">
                                     <ScrollableChat messages={messages} />
                                 </div>
                             )}

@@ -14,4 +14,7 @@ router.route("/:reportId")
     .get(reportController.getReportInfo)
     .delete(reportController.deleteReport)
 
+    router.route("/creator/:uid")
+    .get(reportController.getAllReportsByUser)
+
 module.exports = router;

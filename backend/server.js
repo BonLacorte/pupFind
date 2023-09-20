@@ -38,6 +38,7 @@ app.use('/missingitems', require('./routes/missingItemRoutes'))
 app.use('/message', require('./routes/messageRoutes'))
 app.use('/report', require('./routes/reportRoutes'))
 app.use('/claimedReport', require('./routes/claimedReportRoutes'))
+app.use('/dashboard', require('./routes/dashboardRoutes'))
 
 app.all('*', (req, res) => {
 res.status(404)
@@ -115,9 +116,12 @@ io.on('connection', socket => {
 
         if (!chat.users) return console.log("chat.users not defined");
 
+        // For seen function
         chat.users.forEach((user) => {
+            // If the `user` is the sender then return(exit)
             if (user._id == newMessageRecieved.sender._id) return;
 
+            // If the `user` is not the sender
             socket.in(user._id).emit("message recieved", newMessageRecieved);
 
             // Add this block to update User2's last seen message
@@ -126,6 +130,11 @@ io.on('connection', socket => {
                 socket.to(user._id).emit("update last seen message", newMessageRecieved);
             }
         });
+
+        // For real-time updating of ChatList's list of chat conversation's latest messages whether the user are online of not and whether the user is the sender of the latest message or not
+        chat.users.forEach((user) => {
+            socket.in(user._id).emit("update chat list", newMessageRecieved);
+        })
     });
 
     socket.off("setup", () => {

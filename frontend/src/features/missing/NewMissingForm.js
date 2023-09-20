@@ -3,12 +3,14 @@ import { Locations } from '../config/Locations';
 import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
 import { ChatState } from '../../context/ChatProvider';
+import { useNavigate } from 'react-router-dom';
 
 const NewMissingForm = () => {
 
     const currentDate = new Date().toISOString().split('T')[0];
     const {accessToken, userId, name} = useAuth();
     const { selectedChat, setSelectedChat, chats, setChats, selectedReport, setSelectedReport } = ChatState();
+    const navigate = useNavigate()
 
     const [itemName, setItemName] = useState("");
     const [dateFound, setDateFound] = useState("");
@@ -16,7 +18,10 @@ const NewMissingForm = () => {
     const [itemDescription, setItemDescription] = useState("");
     const [image, setImage] = useState([]);
     const [imagesPreview, setImagesPreview] = useState([]);
+    const [reportType, setReportType] = useState("MissingReport")
+    const [reportStatus, setReportStatus] = useState("Missing")
     const [loadingChat, setLoadingChat] = useState(false)
+    const [newAddedFoundReport, setNewAddedFoundReport] = useState(null)
 
     const onItemNameChanged = (e) => setItemName(e.target.value);
     const onDateFound = (e) => setDateFound(e.target.value);
@@ -67,87 +72,88 @@ const NewMissingForm = () => {
 
     const canSave = [itemName, itemDescription, dateFound, selectedLocation !== 'Choose Location', image,] 
 
-    // const addReport = async (founderId, itemId, event) => {
-    //     event.preventDefault()
-    //     console.log(canSave)
-    //     console.log(name)
-    //     // console.log(userId)
-    //     // console.log(Object.values(Locations).map(location => {
-    //     //     return (
-    //     //         location
-    //     //     )
-    //     // }))
-    //     try {
-    //         const config = {
-    //             headers: {
-    //                 "Content-type": "application/json",
-    //                 token: `Bearer ${accessToken}`,
-    //             },
-    //         };
+    const addReport = async () => {
+        
+        console.log(canSave)
+        console.log(name)
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    token: `Bearer ${accessToken}`,
+                },
+            };
             
-    //         const { data } = await axios.post(`http://localhost:3500/missingitems`,
-    //             {
-    //                 itemName: itemName, 
-    //                 itemDescription: itemDescription, 
-    //                 dateLost: dateFound, 
-    //                 possibleLocationLost: selectedLocation, 
-    //                 image,
-    //                 founder: userId
-    //             },
-    //         config
-    //         );
+            const { data } = await axios.post(`http://localhost:3500/report/`,
+                {
+                    itemName: itemName, 
+                    itemDescription: itemDescription, 
+                    date: dateFound, 
+                    location: selectedLocation, 
+                    image,
+                    creatorId: userId,
+                    reportStatus,
+                    reportType,
+                },
+            config
+            );
 
-    //         console.log(`New Found Item - data `,data)
-    //     } catch (error) {
-    //         console.log(error)
-    //         console.log('NewReportForm')
-    //     };
+            console.log(`New Found Item - data `,data)
+            setNewAddedFoundReport(data)
+        } catch (error) {
+            console.log(error)
+            console.log('NewReportForm')
+        };
 
-    //     // FetchChats
-    //     try {
-    //         const config = {
-    //         headers: {
-    //             token: `Bearer ${accessToken}`,
-    //             },
-    //         };
+        // FetchChats
+        try {
+            const config = {
+            headers: {
+                token: `Bearer ${accessToken}`,
+                },
+            };
 
-    //         const { data } = await axios.get(`http://localhost:3500/chat`, config);
-    //         console.log(`data from FetchChats = data `, data)
-    //         setChats(data);
-    //         console.log(`data from FetchChats = chats `,chats)
-    //     } catch (err) {
-    //         console.log(`${err} - in FetchChats`)
-    //     }
+            const { data } = await axios.get(`http://localhost:3500/chat`,
+            config);
+            console.log(`data from FetchChats = data `, data)
+            await setChats(data);
+            console.log(`data from FetchChats = chats `,chats)
+        } catch (err) {
+            console.log(`${err} - in FetchChats`)
+        }
         
-    //     // HandleAccessChat
-    //     try {
-    //     console.log(`HandleAddLostItemProcessesToChatData (founderId)`,founderId)
-    //     console.log('founderId ',founderId)
-    //     console.log('itemId ',itemId)
-    //     setLoadingChat(true);
-    //     const config = {
-    //         headers: {
-    //         "Content-type": "application/json",
-    //         token: `Bearer ${accessToken}`,
-    //         },
-    //     };
-    
-    //     const { data } = await axios.post(`http://localhost:3500/chat/add-lostitem-processes`, { userId: founderId, lostItemId: id }, config);
-    //     console.log(`data from HandleAccessChat = data`, data)
-    
-    //     if (!chats.find((c) => c._id === data._id)) {
-    //         setChats([data, ...chats])
-    //     }
+        // HandleAccessChat
+        try {
+            setLoadingChat(true);
+            const config = {
+                headers: {
+                "Content-type": "application/json",
+                token: `Bearer ${accessToken}`,
+                },
+            };
         
-    //     console.log(`List of Chats`,chats)
-    
-    //     setSelectedChat(data)
-    //     console.log(`setSelectedChat`, setSelectedChat)
-    //     setLoadingChat(false)
-    //     } catch (err) {
-    //     console.log(`${err} - in HandleAccessChat`)
-    //     }
-    // }
+            const { data } = await axios.post(`http://localhost:3500/chat`,{}, config);
+            console.log(`data from HandleAccessChat = data`, data)
+        
+            if (!chats.find((c) => c._id === data._id)) {
+                setChats([data, ...chats])
+            }
+            
+            console.log(`List of Chats`,chats)
+        
+            await setSelectedChat(data)
+            console.log(`setSelectedChat`, setSelectedChat)
+            setLoadingChat(false)
+            if (loadingChat === false) {
+                navigate(`/dash/chats`)
+            }
+            
+        } catch (err) {
+            console.log(`${err} - in HandleAccessChat`)
+        }
+
+        
+    }
 
     return (
         <div className="bg-white flex flex-col">
@@ -171,7 +177,7 @@ const NewMissingForm = () => {
                                         Missing Item detail
                                     </h1>
                                 </div>
-                                <form className="p-4 flex flex-col">
+                                <div className="p-4 flex flex-col">
                                     <div className="flex flex-row w-full">
                                         <div className="w-1/2 mr-4">
                                             <label className="block mb-2" htmlFor="name"><span className='text-red-500'>*</span>
@@ -249,13 +255,16 @@ const NewMissingForm = () => {
                                         </div>
                                     </div>
 
-                                    <button className="border-solid border-primaryColor bg-primaryColor flex flex-col justify-center h-12 shrink-0 items-center border-2 mt-4">
-                                        <button className="font-sans font-medium tracking-[0.5] leading-[16px] text-white mx-6">
+                                    <button 
+                                        className="border-solid border-primaryColor bg-primaryColor flex flex-col justify-center h-12 shrink-0 items-center border-2 mt-4 font-sans font-medium tracking-[0.5] leading-[16px] text-white"
+                                        onClick={addReport}
+                                    >
+                                        
                                             Submit report
-                                        </button>
+                                        
                                     </button>
                                     
-                                </form>
+                                </div>
                                 <div className="self-stretch flex flex-col mr-2 items-end">
                                 </div>
                             </div>

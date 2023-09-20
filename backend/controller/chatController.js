@@ -7,21 +7,21 @@ const Message = require("../models/Message")
 //@description     Create or fetch One to One Chat
 //@route           POST http://localhost:3500/chat/
 //@access          Protected
-const accessChat = asyncHandler(async (req, res) => {
-    const { userId } = req.body;  // userId is the other user's id -- add the user's id here and substitute it to req.user._id
+const accessChat = asyncHandler(async (req, res, next) => {
+    // const { userId } = req.body;  // userId is the other user's id -- add the user's id here and substitute it to req.user._id
 
     // if other user's id is not sent with request
-    if (!userId) {
-        console.log("UserId not sent with request");
-        return res.sendStatus(400);
-    }
+
+    console.log(req.user._id)
+    const admin =  await User.findOne({ isAdmin: true });
 
     try {
+        // Find chat that have these users: userId(admin), and req.user._id(client)  are
         const isChat = await Chat.find({
             isGroupChat: false,
             $and: [
                 { users: { $elemMatch: { $eq: req.user._id } } },
-                { users: { $elemMatch: { $eq: userId } } },
+                { users: { $elemMatch: { $eq: admin._id } } },
             ],
         })
             .populate({
@@ -43,36 +43,25 @@ const accessChat = asyncHandler(async (req, res) => {
                 ],
             });
 
+        // If there's no chat founded that contains userId(admin), and req.user._id(client), then create a new chat conversation
         if (isChat.length > 0) {
             res.send(isChat[0]);
         } else {
             const chatData = {
                 chatName: "sender",
                 isGroupChat: false,
-                users: [req.user._id, userId],
+                users: [req.user._id, admin._id],
             };
-
+            
             const createdChat = await Chat.create(chatData);
             const FullChat = await Chat.findOne({ _id: createdChat._id })
                 .populate("users", "-password")
-                .populate({
-                    path: "lostItemProcesses",
-                    populate: [
-                        {
-                            path: "founderId",
-                            select: "name pic email phoneNumber facebookLink twitterLink membership specification",
-                        },
-                        {
-                            path: "ownerId",
-                            select: "name pic email phoneNumber facebookLink twitterLink membership specification",
-                        },
-                    ],
-                });
 
             res.status(200).json(FullChat);
         }
     } catch (error) {
-        res.status(400);
+        console.log(error)
+        next(error);
         throw new Error(error.message);
     }
 });
@@ -92,6 +81,7 @@ const addLostItemProcessesToChatData = asyncHandler(async (req, res, next) => {
     }
 
     try {
+        // Find chat that have these users: userId(admin), and req.user._id(client)  are
         let chat = await Chat.findOne({
             isGroupChat: false,
             $or: [
@@ -100,6 +90,7 @@ const addLostItemProcessesToChatData = asyncHandler(async (req, res, next) => {
             ],
         }).populate("users", "-password");
 
+        // If there's no chat founded that contains userId(admin), and req.user._id(client), then create a new chat conversation
         if (!chat) {
             chat = await Chat.create({
                 chatName: "sender",
@@ -197,7 +188,7 @@ const fetchChats = asyncHandler(async (req, res) => {
 const updateLastSeenMessage = asyncHandler(async (req, res, next) => {
     const { chatId, messageId, messageContent } = req.body;
 
-    console.log(req.body)
+    // console.log(req.body)
     if (!chatId || !messageId) {
     return res.sendStatus(400);
     }
@@ -236,7 +227,7 @@ const updateLastSeenMessage = asyncHandler(async (req, res, next) => {
             });
         }
 
-        console.log(chat)
+        // console.log(chat)
         
         // Save the updated chat
         await chat.save();
